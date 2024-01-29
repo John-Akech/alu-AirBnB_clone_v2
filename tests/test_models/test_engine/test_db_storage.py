@@ -10,8 +10,8 @@ from models.city import City
 import os
 
 
-# skip these test if the storage is not db
-@unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "skip if not fs")
+# skip these tests if the storage is not db
+@unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "skip if not db")
 class TestDBStorage(unittest.TestCase):
     """DB Storage test"""
 
@@ -20,7 +20,7 @@ class TestDBStorage(unittest.TestCase):
         self.storage = models.storage
 
     def tearDown(self):
-        """ Remove storage file at end of tests """
+        """ Remove storage file at the end of tests """
         del self.storage
 
     def test_user(self):
@@ -31,11 +31,19 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(user.name, "Abissa")
 
     def test_city(self):
-        """ test user """
+        """ test city """
+        # Create a State instance first
+        state = State(name="SomeState")
+        state.save()
+
+        # Create a City instance and set its state_id to the ID of the State instance
         city = City(name="Maradi")
-        state = State()
         city.state_id = state.id
+
+        # Save the State instance first, then save the City instance
+        state.save()
         city.save()
+
         self.assertTrue(city.id in self.storage.all())
         self.assertEqual(city.name, "Maradi")
 
@@ -67,3 +75,6 @@ class TestDBStorage(unittest.TestCase):
         review.save()
         self.assertTrue(review.id in self.storage.all())
         self.assertEqual(review.text, "no comment")
+
+if __name__ == "__main__":
+    unittest.main()
