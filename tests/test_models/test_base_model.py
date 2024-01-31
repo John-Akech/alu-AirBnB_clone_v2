@@ -1,100 +1,104 @@
 #!/usr/bin/python3
-""" """
-from models.base_model import BaseModel
+"""Unit tests for BaseModel class"""
+
 import unittest
+from models.base_model import BaseModel
 import datetime
-from uuid import UUID
 import json
 import os
 
-
 class TestBaseModel(unittest.TestCase):
-    """ Test base model"""
+    """Test BaseModel class"""
 
     def __init__(self, *args, **kwargs):
-        """ """
+        """Initialize TestBaseModel instance"""
         super().__init__(*args, **kwargs)
         self.name = 'BaseModel'
         self.value = BaseModel
 
     def setUp(self):
-        """ """
+        """Common setup code, if needed"""
         pass
 
     def tearDown(self):
+        """Cleanup code after each test"""
         try:
             os.remove('file.json')
-        except:
+        except FileNotFoundError:
             pass
+        except Exception as e:
+            raise e
 
-    def test_default(self):
-        """ """
-        i = self.value()
-        self.assertEqual(type(i), self.value)
+    def test_default_behavior(self):
+        """Test default behavior of BaseModel instantiation"""
+        instance = self.value()
+        self.assertIsInstance(instance, self.value)
 
     def test_kwargs(self):
-        """ """
-        i = self.value()
-        copy = i.to_dict()
-        new = BaseModel(**copy)
-        self.assertFalse(new is i)
+        """Test BaseModel instantiation with kwargs"""
+        instance = self.value()
+        copy = instance.to_dict()
+        new_instance = BaseModel(**copy)
+        self.assertIsNot(new_instance, instance)
 
-    def test_kwargs_int(self):
-        """ """
-        i = self.value()
-        copy = i.to_dict()
+    def test_kwargs_with_int(self):
+        """Test BaseModel instantiation with kwargs containing int"""
+        instance = self.value()
+        copy = instance.to_dict()
         copy.update({1: 2})
         with self.assertRaises(TypeError):
-            new = BaseModel(**copy)
+            new_instance = BaseModel(**copy)
 
-    def test_save(self):
-        """ Testing save """
-        i = self.value()
-        i.save()
-        key = self.name + "." + i.id
+    def test_save_method(self):
+        """Test save method of BaseModel"""
+        instance = self.value()
+        instance.save()
+        key = f'{self.name}.{instance.id}'
         with open('file.json', 'r') as f:
-            j = json.load(f)
-            self.assertEqual(j[key], i.to_dict())
+            json_data = json.load(f)
+            self.assertEqual(json_data[key], instance.to_dict())
 
-    def test_str(self):
-        """ """
-        i = self.value()
-        self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
-                                                       i.__dict__))
+    def test_string_representation(self):
+        """Test string representation of BaseModel"""
+        instance = self.value()
+        expected_str = f'[{self.name}] ({instance.id}) {instance.__dict__}'
+        self.assertEqual(str(instance), expected_str)
 
-    def test_todict(self):
-        """ """
-        i = self.value()
-        n = i.to_dict()
-        self.assertEqual(i.to_dict(), n)
+    def test_to_dict_method(self):
+        """Test to_dict method of BaseModel"""
+        instance = self.value()
+        self.assertEqual(instance.to_dict(), instance.to_dict())
 
-    def test_kwargs_none(self):
-        """ """
-        n = {None: None}
+    def test_kwargs_with_none(self):
+        """Test BaseModel instantiation with kwargs containing None"""
+        kwargs = {None: None}
         with self.assertRaises(TypeError):
-            new = self.value(**n)
+            new_instance = self.value(**kwargs)
 
-    def test_kwargs_one(self):
-        """ """
-        n = {'Name': 'test'}
+    def test_kwargs_with_one_key(self):
+        """Test BaseModel instantiation with kwargs containing one key"""
+        kwargs = {'Name': 'test'}
         with self.assertRaises(KeyError):
-        new = self.value(**n)
+            new_instance = self.value(**kwargs)
 
-    def test_id(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.id), str)
+    def test_id_type(self):
+        """Test the type of the id attribute"""
+        new_instance = self.value()
+        self.assertIsInstance(new_instance.id, str)
 
-    def test_created_at(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.created_at), datetime.datetime)
+    def test_created_at_type(self):
+        """Test the type of the created_at attribute"""
+        new_instance = self.value()
+        self.assertIsInstance(new_instance.created_at, datetime.datetime)
 
-    def test_updated_at(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.updated_at), datetime.datetime)
-        n = new.to_dict()
-        new = BaseModel(**n)
-        self.assertAlmostEqual(new.created_at.timestamp(),
-                               new.updated_at.timestamp(), delta=1)
+    def test_updated_at_type(self):
+        """Test the type of the updated_at attribute"""
+        new_instance = self.value()
+        self.assertIsInstance(new_instance.updated_at, datetime.datetime)
+        serialized_data = new_instance.to_dict()
+        new_instance = BaseModel(**serialized_data)
+        self.assertAlmostEqual(new_instance.created_at.timestamp(),
+                               new_instance.updated_at.timestamp(), delta=1)
+
+if __name__ == '__main__':
+    unittest.main()
