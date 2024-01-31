@@ -11,12 +11,12 @@ import os
 
 
 # skip these tests if db is not the storage
-@unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "skip if not fs")
-class TestDBSorage(unittest.TestCase):
-    """test DB Storage"""
+@unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "skip if not db")
+class TestDBStorage(unittest.TestCase):
+    """Test DB Storage"""
 
     def setUp(self):
-        """set up the test environment"""
+        """Set up the test environment"""
         self.storage = models.storage
 
     def tearDown(self):
@@ -24,31 +24,31 @@ class TestDBSorage(unittest.TestCase):
         del self.storage
 
     def test_user(self):
-        """Tests the user"""
+        """Test User"""
         user = User(name="Brian", email="brian@gmail.com", password="Brian123")
         user.save()
-        self.assertFalse(user.id in self.storage.all())
+        self.assertIn(user.id, self.storage.all())
         self.assertEqual(user.name, "Brian")
 
     def test_city(self):
-        """ Tests the city """
+        """Test City"""
         state = State(name="Kenya")
         state.save()
         city = City(name="Nairobi")
         city.state_id = state.id
         city.save()
-        self.assertFalse(city.id in self.storage.all())
+        self.assertIn(city.id, self.storage.all())
         self.assertEqual(city.name, "Nairobi")
 
     def test_state(self):
-        """Test state"""
+        """Test State"""
         state = State(name="Kenya")
         state.save()
-        self.assertFalse(state.id in self.storage.all())
+        self.assertIn(state.id, self.storage.all())
         self.assertEqual(state.name, "Kenya")
 
     def test_place(self):
-        """ Test the place"""
+        """Test Place"""
         state = State(name="Kenya")
         state.save()
 
@@ -64,19 +64,19 @@ class TestDBSorage(unittest.TestCase):
         place.user_id = user.id
         place.save()
 
-        self.assertFalse(place.id in self.storage.all())
+        self.assertIn(place.id, self.storage.all())
         self.assertEqual(place.number_rooms, 4)
         self.assertEqual(place.name, "PentHouse")
 
     def test_amenity(self):
-        """tests the amenity"""
+        """Test Amenity"""
         amenity = Amenity(name="Spoon")
         amenity.save()
-        self.assertFalse(amenity.id in self.storage.all())
+        self.assertIn(amenity.id, self.storage.all())
         self.assertEqual(amenity.name, "Spoon")
 
     def test_review(self):
-        """Tests the review"""
+        """Test Review"""
         state = State(name="Kenya")
         state.save()
 
@@ -95,9 +95,9 @@ class TestDBSorage(unittest.TestCase):
         review = Review(text="work smart", place_id=place.id, user_id=user.id)
         review.save()
 
-        self.assertFalse(review.id in self.storage.all())
+        self.assertIn(review.id, self.storage.all())
         self.assertEqual(review.text, "work smart")
 
 
-    if __name__ == '__main__':
-        unittest.main()
+if __name__ == '__main__':
+    unittest.main()
