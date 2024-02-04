@@ -81,6 +81,11 @@ class TestBaseModel(unittest.TestCase):
         with self.assertRaises(ValueError):
             new_instance = self.value(**kwargs)
 
+    def __init__(self, *args, **kwargs):
+        """Initialize BaseModel instance"""
+        if len(kwargs) == 1:
+            raise ValueError("BaseModel cannot be instantiated with kwargs containing only one key.")
+
     def test_id_type(self):
         """Test the type of the id attribute"""
         new_instance = self.value()
