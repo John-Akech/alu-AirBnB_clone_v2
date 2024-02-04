@@ -77,14 +77,8 @@ class TestBaseModel(unittest.TestCase):
 
     def test_kwargs_with_one_key(self):
         """Test BaseModel instantiation with kwargs containing one key"""
-        kwargs = {'Name': 'test'}
         with self.assertRaises(ValueError):
-            new_instance = self.value(**kwargs)
-
-    def __init__(self, *args, **kwargs):
-        """Initialize BaseModel instance"""
-        if len(kwargs) == 1:
-            raise ValueError("BaseModel cannot be instantiated with kwargs containing only one key.")
+            new_instance = BaseModel(Name='test')  # Fixed the instantiation
 
     def test_id_type(self):
         """Test the type of the id attribute"""
