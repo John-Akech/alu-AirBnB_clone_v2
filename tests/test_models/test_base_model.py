@@ -78,7 +78,7 @@ class TestBaseModel(unittest.TestCase):
     def test_kwargs_with_one_key(self):
         """Test BaseModel instantiation with kwargs containing one key"""
         kwargs = {'Name': 'test'}
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ValueError):
             new_instance = self.value(**kwargs)
 
     def test_id_type(self):
