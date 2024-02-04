@@ -110,6 +110,7 @@ class TestBasemodel(unittest.TestCase):
         }
         self.assertDictEqual(mdl.to_dict(), to_dict)
         if os.getenv('HBNB_TYPE_STORAGE') != 'db':
+            # Update this part to match the actual output
             self.assertDictEqual(
                 self.value(id='u-b34', age=13).to_dict(),
                 {
@@ -128,8 +129,8 @@ class TestBasemodel(unittest.TestCase):
             )
         # Tests to_dict output contradiction
         mdl_d = self.value()
-        self.assertIn('__class__', self.value().to_dict())
-        self.assertNotIn('__class__', self.value().__dict__)
+        self.assertIn('__class__', mdl_d.to_dict())
+        self.assertNotIn('__class__', mdl_d.__dict__)
         self.assertNotEqual(mdl_d.to_dict(), mdl_d.__dict__)
         self.assertNotEqual(
             mdl_d.to_dict()['__class__'],
@@ -184,3 +185,6 @@ class TestBasemodel(unittest.TestCase):
         self.assertTrue(i in storage.all().values())
         i.delete()
         self.assertFalse(i in storage.all().values())
+
+if __name__ == '__main__':
+    unittest.main()
