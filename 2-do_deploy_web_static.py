@@ -1,27 +1,42 @@
 #!/usr/bin/python3
-"""Fabric script to generate a .tgz archive"""
+"""Fabric script that distributes an archive to your web servers"""
+from fabric.api import env, put, run
+from os.path import exists
 
-from fabric.api import local
+<<<<<<< HEAD
+env.hosts = ["54.209.26.141", "18.215.182.32"]
+env.user = "ubuntu"
+env.key = "~/.ssh/id_rsa"
+=======
+import os
 from datetime import datetime
+from fabric.api import env, local, put, run, runs_once
 
-def do_pack():
-    """Generates a .tgz archive from the contents of the web_static folder"""
 
-    # Create the 'versions' folder if it doesn't exist
-    local("mkdir -p versions")
+env.hosts = ['34.228.27.169', '54.88.249.173']
+>>>>>>> e53ddc400784148de62dde8d5ef114793def52d4
 
-    # Get the current date and time
-    now = datetime.now()
-    timestamp = now.strftime("%Y%m%d%H%M%S")
 
-    # Name of the archive
-    archive_name = "web_static_{}.tgz".format(timestamp)
+def do_deploy(archive_path):
+    """Function to distribute an archive to your web servers"""
+    if not exists(archive_path):
+        return False
+    try:
+        file_name = archive_path.split("/")[-1]
+        name = file_name.split(".")[0]
+        path_name = "/data/web_static/releases/" + name
+        put(archive_path, "/tmp/")
+        run("mkdir -p {}/".format(path_name))
+        run('tar -xzf /tmp/{} -C {}/'.format(file_name, path_name))
+        run("rm /tmp/{}".format(file_name))
+        run("mv {}/web_static/* {}".format(path_name, path_name))
+        run("rm -rf {}/web_static".format(path_name))
+        run('rm -rf /data/web_static/current')
+        run('ln -s {}/ /data/web_static/current'.format(path_name))
+        return True
+    except Exception:
+        return False
 
-    # Compress the contents of the web_static folder into a .tgz archive
-    result = local("tar -cvzf versions/{} web_static".format(archive_name))
-
-    # Check if the compression was successful
-    if result.failed:
-        return None
-    else:
-        return "versions/{}".format(archive_name)
+# Run the script like this:
+# $ fab -f 2-do_deploy_web_static.py
+# do_deploy:archive_path=versions/file_name.tgz
