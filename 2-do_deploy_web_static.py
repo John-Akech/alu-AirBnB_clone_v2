@@ -9,7 +9,7 @@ import re
 # Set the username and host for SSH connection to the server
 env.user = 'ubuntu'
 env.hosts = ['54.197.135.244', '54.167.3.103']
-env.key_filename = '~/.ssh/id_rsa'
+env.key_filename = '/full/path/to/your/.ssh/id_rsa'  # Specify full path to SSH key file
 
 
 def do_deploy(archive_path):
@@ -51,8 +51,8 @@ def do_deploy(archive_path):
     run("ln -s {} /data/web_static/current".format(folder))
 
     # Create 'hbnb_static' directory if it doesn't exist
-    if not isdir("/var/www/html/hbnb_static"):
-        run("sudo mkdir -p /var/www/html/hbnb_static")
+    if not exists("/var/www/html/hbnb_static"):
+        run("mkdir -p /var/www/html/hbnb_static")
 
     # Sync 'hbnb_static' with 'current'
     run("sudo cp -r /data/web_static/current/* /var/www/html/hbnb_static/")
