@@ -1,46 +1,64 @@
 #!/usr/bin/python3
-"""
-Fabric script to distribute an archive to web servers and deploy it
-"""
-from fabric.api import env, put, run
-from os.path import exists
+# script that distributes an archive to web servers
+from fabric.api import env, put, run, local
+from os.path import exists, isdir
+import os.path
+import re
 
-# Update env.hosts with the IP addresses of your web servers
-env.hosts = ['23.20.91.208', '23.20.188.250']
+
+# Set the username and host for SSH connection to the server
 env.user = 'ubuntu'
+env.hosts = ['54.197.135.244', '54.167.3.103']
+env.key_filename = '~/.ssh/id_rsa'
 
 
 def do_deploy(archive_path):
-    """Deploys the web_static archive to the web servers"""
+    """
+        Distributes archive to web servers
+    """
+    # Check if the archive file exists
     if not exists(archive_path):
         return False
 
-    try:
-        # Upload the archive to /tmp/ directory of the web server
-        put(archive_path, '/tmp/')
+    # Upload the archive to the /tmp/ directory of the web server
+    put(archive_path, "/tmp/")
 
-        # Extract the archive to /data/web_static/releases/<archive_filename>/
-        archive_filename = archive_path.split('/')[-1]
-        release_path = '/data/web_static/releases/{}'.format(
-            archive_filename[:-4])
-        run('mkdir -p {}'.format(release_path))
-        run('tar -xzf /tmp/{} -C {}'.format(archive_filename, release_path))
+    # Uncompress the archive to the folder
+    filename = re.search(r'[^/]+$', archive_path).group(0)
+    folder = "/data/web_static/releases/{}".format(
+        os.path.splitext(filename)[0])
 
-        # Remove the uploaded archive from the web server
-        run('rm /tmp/{}'.format(archive_filename))
+    # Create the folder if it doesn't exist
+    if not exists(folder):
+        run("mkdir -p {}".format(folder))
 
-        # Move the contents of the archive to the web server's web_static directory
-        run('mv {}/web_static/* {}'.format(release_path, release_path))
+    # Extract files from archive
+    run("tar -xzf /tmp/{} -C {}".format(filename, folder))
 
-        # Remove the now empty web_static directory
-        run('rm -rf {}/web_static'.format(release_path))
+    # Remove archive from web server
+    run("rm /tmp/{}".format(filename))
 
-        # Delete the current symbolic link if it exists
-        run('rm -rf /data/web_static/current')
+    # Move all files from web_static to the new folder
+    run("mv {}/web_static/* {}".format(folder, folder))
 
-        # Create a new symbolic link to the deployed code
-        run('ln -s {} /data/web_static/current'.format(release_path))
+    # Remove the web_static folder
+    run("rm -rf {}/web_static".format(folder))
 
-        return True
-    except:
-        return False
+    # Delete the symbolic link
+    run("rm -rf /data/web_static/current")
+
+    # Create new symbolic link
+    run("ln -s {} /data/web_static/current".format(folder))
+
+    # Create 'hbnb_static' directory if it doesn't exist
+    if not isdir("/var/www/html/hbnb_static"):
+        run("sudo mkdir -p /var/www/html/hbnb_static")
+
+    # Sync 'hbnb_static' with 'current'
+    run("sudo cp -r /data/web_static/current/* /var/www/html/hbnb_static/")
+
+    print("New version deployed!")
+    return True
+
+# Usage:
+# fab -f 2-do_deploy_web_static.py do_deploy:/path/to/file.tgz
