@@ -1,69 +1,52 @@
 #!/usr/bin/python3
-"""Fabric script (based on the file 1-pack_web_static.py)
-that distributes an archive to your web servers,
+"""
+Distributes an archive to my web servers,
 using the function do_deploy
 """
-import time
-import os
 from fabric.api import *
-from fabric.operations import run, put
-
+from datetime import datetime
+import os
 
 env.hosts = ['54.197.135.244', '54.167.3.103']
 env.user = 'ubuntu'
 
 
 def do_pack():
-    """generates a .tgz archive"""
+    '''
+    Generates a tgz archive from the
+    contents of the web_static folder
+    '''
     try:
-        local("mkdir -p versions")
-        local("tar -cvzf versions/web_static_{:s}.tgz web_static/".
-              format(time.strftime("%Y%m%d%H%M%S")))
-        return "versions/web_static_{:s}.tgz".\
-            format(time.strftime("%Y%m%d%H%M%S"))
-    except BaseException:
+        local('mkdir -p versions')
+        datetime_format = '%Y%m%d%H%M%S'
+        archive_path = 'versions/web_static_{}.tgz'.format(
+            datetime.now().strftime(datetime_format))
+        local('tar -cvzf {} web_static'.format(archive_path))
+        print('web_static packed: {} -> {}'.format(archive_path,
+              os.path.getsize(archive_path)))
+    except:
         return None
 
 
 def do_deploy(archive_path):
-    """distributes an archive to my web servers"""
+    '''
+    Deploy archive to web server
+    '''
     if not os.path.exists(archive_path):
         return False
+    file_name = archive_path.split('/')[1]
+    file_path = '/data/web_static/releases/'
+    releases_path = file_path + file_name[:-4]
     try:
-        # Upload archive
         put(archive_path, '/tmp/')
-
-        # Create a target dir without the file extension
-        timestamp = time.strftime("%Y%m%d%H%M%S")
-        run(
-            'sudo mkdir -p /data/web_static/releases/web_static_{:s}/'.
-            format(timestamp))
-
-        # uncompress archive to the targed dir
-        run('sudo tar xzvf /tmp/web_static_{:s}.tgz --directory\
-            /data/web_static/releases/web_static_{:s}/'.
-            format(timestamp, timestamp))
-
-        # delete the archive from the web server
-        run('sudo rm /tmp/web_static_{:s}.tgz'.format(timestamp))
-
-        # move contents into host web_static
-        run('sudo mv /data/web_static/releases/web_static_{:s}/web_static/*\
-            /data/web_static/releases/web_static_{}/'.format(
-            timestamp, timestamp))
-
-        # remove irrelevant web_static dir
-        run('sudo rm -rf /data/web_static/releases/web_static_{}/web_static'.
-            format(timestamp))
-
-        # delete the initial symbolic link from the web server
-        run('sudo rm -rf /data/web_static/current')
-
-        # create a new symbolic link
-        run('sudo ln -s /data/web_static/releases/web_static_{:s}/ \
-            /data/web_static/current'.format(
-            timestamp))
-    except BaseException:
+        run('mkdir -p {}'.format(releases_path))
+        run('tar -xzf /tmp/{} -C {}'.format(file_name, releases_path))
+        run('rm /tmp/{}'.format(file_name))
+        run('mv {}/web_static/* {}/'.format(releases_path, releases_path))
+        run('rm -rf {}/web_static'.format(releases_path))
+        run('rm -rf /data/web_static/current')
+        run('ln -s {} /data/web_static/current'.format(releases_path))
+        print('New version deployed!')
+        return True
+    except:
         return False
-    # if all that succeeded, return True
-    return True
