@@ -55,7 +55,7 @@ def do_deploy(archive_path):
     # run("sudo mkdir -p /var/www/html/hbnb_static")
 
     # Sync 'hbnb_static' with 'current'
-    #run("sudo cp -r /data/web_static/current/* /var/www/html/hbnb_static/")
+    # run("sudo cp -r /data/web_static/current/* /var/www/html/hbnb_static/")
 
     print("New version deployed!")
     return True
