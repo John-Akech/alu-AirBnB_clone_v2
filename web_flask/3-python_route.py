@@ -49,11 +49,11 @@ def c(text):
     """
     return "C %s" % text.replace('_', ' ')
 
-@app.route("/python/(<text>)", strict_slashes=False)
+@app.route("/python/<text>", strict_slashes=False)
 @app.route("/python/", strict_slashes=False)
 def python(text="is cool"):
     """
-    Route for "/python/(<text>)".
+    Route for "/python/<text>".
     
     Args:
         text (str, optional): The dynamic part of the URL, defaults to "is cool".
