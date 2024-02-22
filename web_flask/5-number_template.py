@@ -80,7 +80,7 @@ def number(n):
     """
     return "%d is a number" % n if isinstance(n, int) else None
 
-@app.route("/number_template/<n>")
+app.route("/number_template/<int:n>", strict_slashes=False)
 def number_template(n):
     """
     Route for /number_template/<n> URL.
