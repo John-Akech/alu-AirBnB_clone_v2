@@ -1,4 +1,19 @@
 #!/usr/bin/python3
+"""
+This is a simple Flask web application.
+
+It defines four routes:
+- Route for the root URL ("/") that displays "Hello HBNB!"
+- Route for "/hbnb" that displays "HBNB"
+- Route for "/c/<text>" that displays "C <text>" where <text> can be any string
+- Route for "/python/(<text>)" that displays "Python <text>" where <text> is a parameter that defaults to "is cool"
+- Route for the "/number/<n>" URL.
+
+Requirements:
+- Your web application must be listening on 0.0.0.0, port 5000
+"""
+
+
 from flask import Flask
 
 app = Flask(__name__)
@@ -50,7 +65,7 @@ def python(text="is cool"):
     """
     return "Python %s" % text.replace('_', ' ')
 
-@app.route("/number/<n>", strict_slashes=False)
+@app.route("/number/<n>")
 def number(n):
     """
     Route for the "/number/<n>" URL.
