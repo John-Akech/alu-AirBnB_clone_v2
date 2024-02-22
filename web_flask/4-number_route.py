@@ -18,8 +18,9 @@ from flask import Flask
 
 app = Flask(__name__)
 
+
 @app.route("/", strict_slashes=False)
-def index():
+def hello_hbnb():
     """
     Route for the root URL ("/").
     
@@ -27,19 +28,21 @@ def index():
         str: A message for the index page.
     """
     return "Hello HBNB!"
-    
+
+
 @app.route("/hbnb", strict_slashes=False)
-def about():
+def display_hbnb():
     """
     Route for the "/hbnb" URL.
     
     Returns:
-        str: A message for the about page.
+        str: A message for the HBNB page.
     """
     return "HBNB"
-    
+
+
 @app.route("/c/<text>", strict_slashes=False)
-def C(text):
+def display_c(text):
     """
     Route for the "/c/<text>" URL.
     
@@ -51,11 +54,12 @@ def C(text):
     """
     return "C %s" % text.replace('_', ' ')
 
-@app.route("/python")
-@app.route("/python/(<text>)", strict_slashes=False)
-def python(text="is cool"):
+
+@app.route("/python/", defaults={"text": "is cool"}, strict_slashes=False)
+@app.route("/python/<text>", strict_slashes=False)
+def display_python(text):
     """
-    Route for the "/python" and "/python/(<text>)" URLs.
+    Route for the "/python/" and "/python/<text>" URLs.
     
     Args:
         text (str): The text to display after "Python ".
@@ -65,22 +69,21 @@ def python(text="is cool"):
     """
     return "Python %s" % text.replace('_', ' ')
 
-@app.route("/number/<n>")
-def number(n):
+
+@app.route("/number/<int:n>", strict_slashes=False)
+def display_number(n):
     """
     Route for the "/number/<n>" URL.
     
     Args:
-        n (str): The number to check.
+        n (int): The number to check.
     
     Returns:
         str: A message indicating whether the provided value is a number.
             If it's a number, it returns "n is a number"; otherwise, it returns None.
     """
-    if type(n) == int:
-        return "n is a number"
-    else:
-        return None
+    return "%d is a number" % n
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
