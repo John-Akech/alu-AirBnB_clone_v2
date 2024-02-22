@@ -6,7 +6,7 @@ It defines four routes:
 - Route for the root URL ("/") that displays "Hello HBNB!"
 - Route for "/hbnb" that displays "HBNB"
 - Route for "/c/<text>" that displays "C <text>" where <text> can be any string
-- Route for "/python/(<text>)" that displays "Python <text>" where <text> is a parameter that defaults to "is cool"
+- Route for "/python/(<text>)" that displays "Python <text>"
 
 Requirements:
 - Your web application must be listening on 0.0.0.0, port 5000
