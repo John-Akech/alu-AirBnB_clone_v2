@@ -16,52 +16,31 @@ from flask import Flask
 
 app = Flask(__name__)
 
+
 @app.route("/", strict_slashes=False)
 def index():
-    """
-    Route for the root URL ("/").
-    
-    Returns:
-        str: A message for the index page.
-    """
+    """Route for the root URL ("/")."""
     return "Hello HBNB!"
+
 
 @app.route("/hbnb", strict_slashes=False)
 def hbnb():
-    """
-    Route for "/hbnb".
-    
-    Returns:
-        str: A message for the about page.
-    """
+    """Route for "/hbnb"."""
     return "HBNB"
+
 
 @app.route("/c/<text>", strict_slashes=False)
 def c(text):
-    """
-    Route for "/c/<text>".
-    
-    Args:
-        text (str): The dynamic part of the URL.
-        
-    Returns:
-        str: A message displaying "C <text>", where <text> is the dynamic part of the URL.
-    """
+    """Route for "/c/<text>"."""
     return "C %s" % text.replace('_', ' ')
+
 
 @app.route("/python/<text>", strict_slashes=False)
 @app.route("/python/", strict_slashes=False)
 def python(text="is cool"):
-    """
-    Route for "/python/<text>".
-    
-    Args:
-        text (str, optional): The dynamic part of the URL, defaults to "is cool".
-        
-    Returns:
-        str: A message displaying "Python <text>", where <text> is the dynamic part of the URL.
-    """
+    """Route for "/python/<text>"."""
     return "Python %s" % text.replace('_', ' ')
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
