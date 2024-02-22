@@ -17,7 +17,8 @@ app = Flask(__name__)
 @app.route("/", strict_slashes=False)
 def index():
     """
-    Route for the root URL ("/").    
+    Route for the root URL ("/").
+
     Returns:
         str: A greeting message.
     """
