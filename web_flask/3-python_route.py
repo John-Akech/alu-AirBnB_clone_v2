@@ -25,9 +25,9 @@ def index():
         str: A message for the index page.
     """
     return "Hello HBNB!"
-    
+
 @app.route("/hbnb", strict_slashes=False)
-def about():
+def hbnb():
     """
     Route for "/hbnb".
     
@@ -37,7 +37,7 @@ def about():
     return "HBNB"
 
 @app.route("/c/<text>", strict_slashes=False)
-def C(text):
+def c(text):
     """
     Route for "/c/<text>".
     
@@ -49,8 +49,8 @@ def C(text):
     """
     return "C %s" % text.replace('_', ' ')
 
-app.route("/python", strict_slashes=False)
 @app.route("/python/(<text>)", strict_slashes=False)
+@app.route("/python/", strict_slashes=False)
 def python(text="is cool"):
     """
     Route for "/python/(<text>)".
