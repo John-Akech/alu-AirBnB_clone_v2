@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Web Flask Project
 
 A sub-project within AirBnB where Flask was utilized to integrate the back-end storage engine with the web static HTML/CSS pages previously developed.
@@ -30,7 +29,6 @@ To run the Flask app, follow these instructions:
 - Integration of Flask
 - Gradual development of complex templates based on HTML pages
 - Seamless integration of the back-end storage engine with web static HTML/CSS pages
-=======
 Learning Objectives
 
 At the end of this project, you are expected to be able to explain to anyone, without the help of Google:
@@ -45,5 +43,3 @@ General
     How to create a HTML response in Flask by using a template
     How to create a dynamic template (loops, conditions…)
     How to display in HTML data from a MySQL database
-
->>>>>>> 426e2ecf714ea63d3944996a4621bdb040eedfc6
