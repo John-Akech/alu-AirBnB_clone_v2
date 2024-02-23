@@ -1,16 +1,30 @@
 #!/usr/bin/python3
+<<<<<<< HEAD
 """Starts a Flask web application.
 
 The application listens on 0.0.0.0, port 5000.
 Routes:
     /: Displays 'Hello HBNB!'
 """
+=======
+"""
+This is a simple Flask web application.
+
+It defines a single route for the root URL ("/") and displays "Hello HBNB!".
+
+Requirements:
+- Your web application must be listening on 0.0.0.0, port 5000
+- You must use the option strict_slashes=False in your route definition
+"""
+
+>>>>>>> 426e2ecf714ea63d3944996a4621bdb040eedfc6
 from flask import Flask
 
 app = Flask(__name__)
 
 
 @app.route("/", strict_slashes=False)
+<<<<<<< HEAD
 def hello_hbnb():
     """Displays 'Hello HBNB!'"""
     return "Hello HBNB!"
@@ -18,3 +32,16 @@ def hello_hbnb():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+=======
+def index():
+    """
+    Route for the root URL ("/").
+
+    Returns:
+        str: A greeting message.
+    """
+    return "Hello HBNB!"
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)
+>>>>>>> 426e2ecf714ea63d3944996a4621bdb040eedfc6
